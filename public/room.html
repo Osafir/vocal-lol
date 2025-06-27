@@ -12,16 +12,17 @@
     const params = new URLSearchParams(location.search);
     const room = params.get("room");
     const ws = new WebSocket(`${location.protocol === "https:" ? "wss" : "ws"}://${location.host}`);
-
     let pc;
 
     ws.onopen = () => {
+      console.log("🔗 WebSocket connecté");
       ws.send(JSON.stringify({ type: "join", room }));
     };
 
     ws.onmessage = async (event) => {
       const data = JSON.parse(event.data);
       if (data.type === "ready") {
+        console.log("👤 Un nouvel utilisateur est prêt");
         start(true); // l'initiateur
       } else if (data.type === "signal") {
         if (!pc) start(false);
@@ -35,15 +36,19 @@
     };
 
     async function start(isCaller) {
+      console.log("🎥 Initialisation WebRTC (caller: " + isCaller + ")");
       pc = new RTCPeerConnection();
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
       stream.getTracks().forEach((track) => pc.addTrack(track, stream));
+      console.log("🎙️ Micro activé");
 
       pc.ontrack = (event) => {
         const audio = document.createElement("audio");
         audio.srcObject = event.streams[0];
         audio.autoplay = true;
         document.body.appendChild(audio);
+        console.log("🔊 Audio reçu !");
+        alert("🔊 Flux audio reçu !");
       };
 
       pc.onicecandidate = (e) => {
