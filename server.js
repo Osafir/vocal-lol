@@ -1,4 +1,3 @@
-// server.js
 const express = require("express");
 const http = require("http");
 const WebSocket = require("ws");
@@ -18,14 +17,15 @@ wss.on("connection", (ws) => {
         ws.room = room;
         rooms[room] = rooms[room] || [];
         rooms[room].push(ws);
-        if (rooms[room].length === 2) {
-          rooms[room].forEach((client) => {
-            if (client !== ws) {
-              client.send(JSON.stringify({ type: "ready" }));
-            }
-          });
-        }
+
+        // Inform all others in the room a new peer is ready
+        rooms[room].forEach((client) => {
+          if (client !== ws) {
+            client.send(JSON.stringify({ type: "ready" }));
+          }
+        });
         break;
+
       case "signal":
         rooms[room].forEach((client) => {
           if (client !== ws) {
