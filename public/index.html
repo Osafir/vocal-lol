@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Créer un vocal</title>
+</head>
+<body>
+  <h1>Créer ton vocal temporaire</h1>
+  <button onclick="createRoom()">Créer un salon</button>
+
+  <script>
+    function createRoom() {
+      const room = Math.random().toString(36).substring(7);
+      window.location.href = `/room.html?room=${room}`;
+    }
+  </script>
+</body>
+</html>
