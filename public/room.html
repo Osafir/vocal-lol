@@ -11,7 +11,8 @@
   <script>
     const params = new URLSearchParams(location.search);
     const room = params.get("room");
-    const ws = new WebSocket(`ws://${location.host}`);
+    const ws = new WebSocket(`${location.protocol === "https:" ? "wss" : "ws"}://${location.host}`);
+
     let pc;
 
     ws.onopen = () => {
